@@ -9,7 +9,7 @@
         "--show-column-numbers"
     ],
     "editor.formatOnSave": true,
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "autopep8",
     "editor.codeActionsOnSave": {
         "source.organizeImports": true // Runs isort.
     },

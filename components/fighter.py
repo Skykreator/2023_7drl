@@ -13,21 +13,50 @@ if TYPE_CHECKING:
 class Fighter(BaseComponent):
     parent: Actor
 
-    def __init__(self, hp: int, base_defense: int, base_power: int):
-        self.max_hp = hp
+    def __init__(self, hp: int, mental_strength: int, spiritual_defense: int, spiritual_power: int, base_defense: int, base_power: int):
         self._hp = hp
+        self._max_hp = hp
+        self._mental_strength = mental_strength
+        self.base_spiritual_defense = spiritual_defense
+        self.base_spiritual_power = spiritual_power
         self.base_defense = base_defense
         self.base_power = base_power
 
     @property
     def hp(self) -> int:
-        return self._hp
+        return self._hp + self.health_bonus
+    
+    @property
+    def max_hp(self) -> int:
+        return self._max_hp + self.max_health_bonus
+    
+    @max_hp.setter
+    def max_hp(self, value: int) -> None:
+        self._max_hp = value
 
     @hp.setter
     def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))
         if self._hp == 0 and self.parent.ai:
             self.die()
+
+    @property
+    def mental_strength(self) -> int:
+        return self._mental_strength + self.mental_bonus
+
+    @mental_strength.setter
+    def mental_strength(self, value: int) -> None:
+        self._mental_strength = max(0, value)
+        if self._mental_strength == 0 and self.parent.ai:
+            self.die()
+
+    @property
+    def spiritual_defense(self) -> int:
+        return self.base_spiritual_defense + self.spiritual_defense_bonus
+    
+    @property
+    def spiritual_power(self) -> int:
+        return self.base_spiritual_power + self.spiritual_power_bonus
 
     @property
     def defense(self) -> int:
@@ -38,18 +67,61 @@ class Fighter(BaseComponent):
         return self.base_power + self.power_bonus
 
     @property
-    def defense_bonus(self) -> int:
+    def health_bonus(self) -> int:
+        bonus = 0
+        if self.parent.body:
+            bonus += self.parent.body.health_bonus
+        return bonus
+    
+    @property
+    def max_health_bonus(self) -> int:
+        bonus = 0
+        if self.parent.body:
+            bonus += self.parent.body.max_health_bonus
+        return bonus
+
+    @property
+    def mental_bonus(self) -> int:
+        bonus = 0
+        if self.parent.body:
+            bonus += self.parent.body.mental_strength_bonus
+        return bonus
+
+    @property
+    def spiritual_defense_bonus(self) -> int:
+        bonus = 0
         if self.parent.equipment:
-            return self.parent.equipment.defense_bonus
-        else:
-            return 0
+            bonus += self.parent.equipment.spiritual_defense_bonus
+        if self.parent.body:
+            bonus += self.parent.body.spiritual_defense_bonus
+        return bonus
+    
+    @property
+    def spiritual_power_bonus(self) -> int:
+        bonus = 0
+        if self.parent.equipment:
+            bonus += self.parent.equipment.spiritual_power_bonus
+        if self.parent.body:
+            bonus += self.parent.body.spiritual_power_bonus
+        return bonus
+
+    @property
+    def defense_bonus(self) -> int:
+        bonus = 0
+        if self.parent.equipment:
+            bonus += self.parent.equipment.defense_bonus
+        if self.parent.body:
+            bonus += self.parent.body.defense_bonus
+        return bonus
 
     @property
     def power_bonus(self) -> int:
+        bonus = 0
         if self.parent.equipment:
-            return self.parent.equipment.power_bonus
-        else:
-            return 0
+            bonus += self.parent.equipment.power_bonus
+        if self.parent.body:
+            bonus += self.parent.body.power_bonus
+        return bonus
 
     def die(self) -> None:
         if self.engine.player is self.parent:
@@ -87,3 +159,11 @@ class Fighter(BaseComponent):
 
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
+
+    def mental_strength_change(self, amount: float) -> int:
+
+        amount_changed = (int) (self.mental_strength * amount)
+
+        self.hp = self.hp + amount_changed
+
+        return amount_changed
