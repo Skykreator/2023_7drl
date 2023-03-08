@@ -198,13 +198,18 @@ class CharacterScreenEventHandler(AskUserEventHandler):
 
         y = 0
 
-        width = len(self.TITLE) + 4
+        widest_name = 0
+
+        for part in self.engine.player.body.parts:
+            widest_name = max(widest_name, len(part.parent.name))
+
+        width = max(len(self.TITLE), widest_name + 6)+ 4
 
         console.draw_frame(
             x=x,
             y=y,
             width=width,
-            height=7,
+            height=13 + len(self.engine.player.body.parts),
             title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
@@ -219,8 +224,16 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}",
         )
 
-        console.print(x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.power}")
-        console.print(x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}")
+        console.print(x=x + 1, y=y + 4, string=f"Health: {self.engine.player.fighter.hp} / {self.engine.player.fighter.max_hp}")
+        console.print(x=x + 1, y=y + 5, string=f"Mental Strength: {self.engine.player.fighter.mental_strength}")
+        console.print(x=x + 1, y=y + 6, string=f"Power: {self.engine.player.fighter.power}")
+        console.print(x=x + 1, y=y + 7, string=f"Defense: {self.engine.player.fighter.defense}")
+        console.print(x=x + 1, y=y + 8, string=f"Spiritual Power: {self.engine.player.fighter.spiritual_power}")
+        console.print(x=x + 1, y=y + 9, string=f"Spiritual Defense: {self.engine.player.fighter.spiritual_defense}")
+
+        console.print(x=x + 1, y=y + 11, string=f"Body: ")
+        for i, part in enumerate(self.engine.player.body.parts):
+            console.print(x=x + 1, y=y + 12 + i, string=f"{part.parent.name}: {part.current_health} / {part.health_bonus}")
 
 
 class LevelUpEventHandler(AskUserEventHandler):

@@ -24,8 +24,8 @@ class Equippable(BaseComponent):
 
         self.power_bonus = power_bonus
         self.defense_bonus = defense_bonus
-        self.spiritual_power = spiritual_power_bonus
-        self.spiritual_defense = spiritual_defense_bonus
+        self.spiritual_power_bonus = spiritual_power_bonus
+        self.spiritual_defense_bonus = spiritual_defense_bonus
 
 
 class Dagger(Equippable):

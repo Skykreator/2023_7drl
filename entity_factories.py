@@ -80,7 +80,7 @@ player = Actor(
 # H:16 M:16 P:6 D:6 SP:13 SD:13
 librarian = Actor(
     char="A",
-    color=color.dark_blue,
+    color=color.blue,
     name="Librarian",
     ai_cls=Neutral,
     equipment=Equipment(),
@@ -94,7 +94,7 @@ librarian = Actor(
 # H:16 M:16 P:6 D:6 SP:13 SD:13
 mad_librarian = Actor(
     char="A",
-    color=color.blue,
+    color=color.light_blue,
     name="Mad Librarian",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
@@ -108,7 +108,7 @@ mad_librarian = Actor(
 # H:25 M:14 P:14 D:14 SP:0 SD:3
 dwarf = Actor(
     char="n",
-    color=color.dark_grey,
+    color=color.dark_green,
     name="Dwarf",
     ai_cls=Neutral,
     equipment=Equipment(),
@@ -122,7 +122,7 @@ dwarf = Actor(
 # H:25 M:14 P:14 D:14 SP:0 SD:3
 mad_dwarf = Actor(
     char="n",
-    color=color.light_grey,
+    color=color.green,
     name="Mad Dwarf",
     ai_cls=HostileEnemy,
     equipment=Equipment(),

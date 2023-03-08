@@ -128,6 +128,9 @@ class Neutral(BaseAI):
     def perform(self) -> None:
         # Revert the AI back to the original state if the effect has run its course.
 
+        if random.random() < 0.333:
+            return WaitAction(self.entity)
+        
         direction_x, direction_y = random.choice(
             [
                 (-1, -1),  # Northwest
@@ -149,3 +152,37 @@ class Neutral(BaseAI):
             direction_x,
             direction_y,
         ).perform()
+
+class FleeingNeutral(BaseAI):
+    def __init__(self, entity: Actor, bully: Actor, previous_ai: Optional[BaseAI], turns_remaining: int):
+        super().__init__(entity)
+        self.bully = bully
+        self.previous_ai = previous_ai
+        self.turns_remaining = turns_remaining
+
+    def perform(self) -> None:
+        if self.turns_remaining <= 0:
+            self.entity.ai = self.previous_ai
+        else:
+            if self.bully.y < self.entity.y:
+                dy = 1
+            else:
+                dy = -1
+            if self.bully.x < self.entity.x:
+                dx = 1
+            else:
+                dx = -1
+
+            if not self.entity.gamemap.in_bounds(self.entity.x + dx, self.entity.y + dy) or not self.entity.gamemap.tiles["walkable"][self.entity.x + dx, self.entity.y + dy]:
+                if random.random() < 0.5:
+                    dx = 0
+                else:
+                    dy = 0
+            if not self.entity.gamemap.in_bounds(self.entity.x + dx, self.entity.y) or not self.entity.gamemap.tiles["walkable"][self.entity.x + dx, self.entity.y]:
+                dx = 0
+            if not self.entity.gamemap.in_bounds(self.entity.x, self.entity.y + dy) or not self.entity.gamemap.tiles["walkable"][self.entity.x, self.entity.y + dy]:
+                dy = 0
+                
+
+            self.turns_remaining -= 1
+            return BumpAction(self.entity, dx, dy).perform()

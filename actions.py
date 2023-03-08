@@ -153,7 +153,7 @@ class MeleeAction(ActionWithDirection):
         if not target:
             raise exceptions.Impossible("Nothing to attack.")
 
-        damage = self.entity.fighter.power - target.fighter.defense
+        damage = int((self.entity.fighter.power - target.fighter.defense) * 0.2)
 
         attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
         if self.entity is self.engine.player:
@@ -164,6 +164,9 @@ class MeleeAction(ActionWithDirection):
         if damage > 0:
             self.engine.message_log.add_message(f"{attack_desc} for {damage}.", attack_color)
             target.fighter.hp -= damage
+            import components.ai
+            if isinstance(target.ai, components.ai.Neutral):
+                target.ai = components.ai.FleeingNeutral(target, self.entity, target.ai, 10)
         else:
             self.engine.message_log.add_message(f"{attack_desc} but does no damage.", attack_color)
 

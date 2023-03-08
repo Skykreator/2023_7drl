@@ -39,6 +39,30 @@ class Equipment(BaseComponent):
             bonus += self.armor.equippable.power_bonus
 
         return bonus
+    
+    @property
+    def spiritual_defense_bonus(self) -> int:
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.spiritual_defense_bonus
+
+        if self.armor is not None and self.armor.equippable is not None:
+            bonus += self.armor.equippable.spiritual_defense_bonus
+
+        return bonus
+
+    @property
+    def spiritual_power_bonus(self) -> int:
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.spiritual_power_bonus
+
+        if self.armor is not None and self.armor.equippable is not None:
+            bonus += self.armor.equippable.spiritual_power_bonus
+
+        return bonus
 
     def item_is_equipped(self, item: Item) -> bool:
         return self.weapon == item or self.armor == item

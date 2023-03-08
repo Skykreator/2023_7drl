@@ -144,12 +144,14 @@ class Fighter(BaseComponent):
         if self.parent.loot_table:
             if self.parent.inventory:
                 for _ in range(self.parent.loot_table.inventory_rolls):
-                    if random.random() < self.parent.loot_table.inventory_chance:
-                        self.parent.inventory.drop(self.parent.inventory.items[random.randint(0, len(self.parent.inventory.items))])
+                    if len(self.parent.inventory.items) > 0:
+                        if random.random() < self.parent.loot_table.inventory_chance:
+                            self.parent.inventory.drop(self.parent.inventory.items[random.randint(0, len(self.parent.inventory.items))])
             if self.parent.body:
                 for _ in range(self.parent.loot_table.body_rolls):
-                    if random.random() < self.parent.loot_table.body_chance:
-                        self.parent.body.drop(self.parent.body.parts[random.randint(0, len(self.parent.body.parts))])
+                    if len(self.parent.body.parts) > 0:
+                        if random.random() < self.parent.loot_table.body_chance:
+                            self.parent.body.drop(self.parent.body.parts[random.randint(0, len(self.parent.body.parts))])
                         
 
         self.engine.message_log.add_message(death_message, death_message_color)
