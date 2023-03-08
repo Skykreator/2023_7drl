@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List
 
 from components.base_component import BaseComponent
 from components.part import Part
-from components.fighter import Fighter
-from part_types import PartType
+import copy
 
 if TYPE_CHECKING:
     from entity import Actor,Item
@@ -15,9 +14,9 @@ class Body(BaseComponent):
     parent: Actor
 
     def __init__(self, parts: List[Item] = None, max_parts: int = 12):
-        self.parts = []
+        self.parts: List[Part] = []
         for part in parts:
-            self.parts.append(part.part)
+            self.parts.append(copy.deepcopy(part.part))
         self.max_parts = max_parts
 
 
@@ -96,17 +95,16 @@ class Body(BaseComponent):
             return
             
         self.parts.append(part)
-        self.parent.fighter.max_hp += part.health_bonus
-        self.parent.fighter.hp += part.current_health
+
+        if self.parent.inventory:
+            if part.parent in self.parent.inventory.items:
+                self.parent.inventory.items.remove(part.parent)
 
         if add_message:
             self.equip_message(part.parent.name)
 
     def unequip(self, part: Part, add_message: bool) -> None:
         self.parts.remove(part)
-        self.parent.fighter.max_hp -= part.health_bonus
-        part.current_health = self.parent.fighter.hp - self.parent.fighter.max_hp
-        self.parent.fighter.hp(self.parent.fighter.hp)
         if add_message:
             self.unequip_message(part.parent.name)
 
@@ -115,3 +113,25 @@ class Body(BaseComponent):
             self.unequip(part, add_message)
         else:
             self.equip(part, add_message)
+    
+    def set_health(self, value: int) -> None:
+        change = value - self.health_bonus
+        for part in self.parts:
+            #positive try to get to max, negative try to get to 0
+            if change == 0:
+                return
+            part_change = 0
+            if change < 0:
+                part_change = max(-part.current_health, change)
+            else:
+                part_change = min(part.health_bonus - part.current_health, change) 
+            part.current_health += part_change
+            change -= part_change
+            if (part.health_bonus > 0):
+                self.engine.message_log.add_message(f"{part.parent.name} max: {part.health_bonus}, current: {part.current_health}.")
+    
+    def drop(self, part: Part) -> None:
+        self.parts.remove(part)
+        part.parent.place(self.parent.x, self.parent.y, self.gamemap)
+
+        self.engine.message_log.add_message(f"{self.parent.name} dropped a {part.parent.name}.")

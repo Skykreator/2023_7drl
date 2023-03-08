@@ -66,6 +66,12 @@ class Equipment(BaseComponent):
         if add_message:
             self.unequip_message(current_item.name)
 
+        if self.parent.inventory:
+            if len(self.parent.inventory.items) >= self.parent.inventory.capacity:
+                current_item.place(self.parent.x, self.parent.y, self.gamemap)
+        else:
+            current_item.place(self.parent.x, self.parent.y,self.gamemap)
+
         setattr(self, slot, None)
 
     def toggle_equip(self, equippable_item: Item, add_message: bool = True) -> None:

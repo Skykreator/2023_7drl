@@ -5,6 +5,7 @@ from components.fighter import Fighter
 from components.inventory import Inventory
 from components.level import Level
 from components.body import Body
+from components.loot_table import LootTable
 import color
 from entity import Actor, Item
 
@@ -60,7 +61,9 @@ max_arm = Item(char="\\", color=color.red, name="Max's Arm", part=part.Max_Arm()
 
 max_leg = Item(char="G", color=color.red, name="Max's Leg", part=part.Max_Leg())
 
+base_loot = LootTable(inventory_chance=0.1, inventory_rolls=3,body_chance=0.8,body_rolls=1)
 
+# H:20 M:10 P:10 D:10 SP:10 SD:10
 player = Actor(
     char="@",
     color=color.white,
@@ -70,9 +73,11 @@ player = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=26),
     level=Level(level_up_base=200),
-    body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm])
+    body = Body(parts=[human_leg, human_leg,human_arm, human_arm, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_heart, human_brain]),
+    loot_table=base_loot,
 )
 
+# H:16 M:16 P:6 D:6 SP:13 SD:13
 librarian = Actor(
     char="A",
     color=color.dark_blue,
@@ -82,9 +87,11 @@ librarian = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=10),
     level=Level(xp_given=35),
-    body = Body(parts=[librarian_heart, librarian_brain, librarian_leg, librarian_leg, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_arm, librarian_arm])
+    body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
+    loot_table=base_loot,
 )
 
+# H:16 M:16 P:6 D:6 SP:13 SD:13
 mad_librarian = Actor(
     char="A",
     color=color.blue,
@@ -94,9 +101,11 @@ mad_librarian = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=10),
     level=Level(xp_given=35),
-    body = Body(parts=[librarian_heart, librarian_brain, librarian_leg, librarian_leg, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_arm, librarian_arm])
+    body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
+    loot_table=base_loot,
 )
 
+# H:25 M:14 P:14 D:14 SP:0 SD:3
 dwarf = Actor(
     char="n",
     color=color.dark_grey,
@@ -106,9 +115,11 @@ dwarf = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=10),
     level=Level(xp_given=100),
-    body = Body(parts=[dwarf_heart, dwarf_brain, dwarf_leg, dwarf_leg, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear, dwarf_arm, dwarf_arm])
+    body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
+    loot_table=base_loot,
 )
 
+# H:25 M:14 P:14 D:14 SP:0 SD:3
 mad_dwarf = Actor(
     char="n",
     color=color.light_grey,
@@ -118,9 +129,11 @@ mad_dwarf = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=10),
     level=Level(xp_given=100),
-    body = Body(parts=[dwarf_heart, dwarf_brain, dwarf_leg, dwarf_leg, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear, dwarf_arm, dwarf_arm])
+    body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
+    loot_table=base_loot,
 )
 
+# H:31 M:14 P:20 D:20 SP:0 SD:3
 max = Actor(
     char="n",
     color=color.orange,
@@ -130,7 +143,8 @@ max = Actor(
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=-9, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=10),
     level=Level(xp_given=100),
-    body = Body(parts=[dwarf_heart, dwarf_brain, max_leg, max_leg, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear, max_arm, max_arm])
+    body = Body(parts=[max_leg, max_leg, max_arm, max_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
+    loot_table=base_loot,
 )
 
 orc = Actor(
@@ -142,7 +156,8 @@ orc = Actor(
     fighter=Fighter(hp=10, base_defense=0, base_power=3, mental_strength=1, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=35),
-    body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm])
+    body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm]),
+    loot_table=base_loot,
 )
 troll = Actor(
     char="T",
@@ -153,7 +168,8 @@ troll = Actor(
     fighter=Fighter(hp=16, base_defense=1, base_power=4, mental_strength=1, spiritual_defense=0, spiritual_power=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=100),
-    body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm])
+    body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm]),
+    loot_table=base_loot,
 )
 
 confusion_scroll = Item(

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from components.base_component import BaseComponent
 from render_order import RenderOrder
+import random
 import color
 
 if TYPE_CHECKING:
@@ -36,8 +37,10 @@ class Fighter(BaseComponent):
 
     @hp.setter
     def hp(self, value: int) -> None:
-        self._hp = max(0, min(value, self.max_hp))
-        if self._hp == 0 and self.parent.ai:
+        self._hp = min(self._max_hp, max(0, value))
+        body_health = value - self._hp
+        self.parent.body.set_health(body_health)
+        if self.hp == 0 and self.parent.ai:
             self.die()
 
     @property
@@ -137,6 +140,17 @@ class Fighter(BaseComponent):
         self.parent.ai = None
         self.parent.name = f"remains of {self.parent.name}"
         self.parent.render_order = RenderOrder.CORPSE
+
+        if self.parent.loot_table:
+            if self.parent.inventory:
+                for _ in range(self.parent.loot_table.inventory_rolls):
+                    if random.random() < self.parent.loot_table.inventory_chance:
+                        self.parent.inventory.drop(self.parent.inventory.items[random.randint(0, len(self.parent.inventory.items))])
+            if self.parent.body:
+                for _ in range(self.parent.loot_table.body_rolls):
+                    if random.random() < self.parent.loot_table.body_chance:
+                        self.parent.body.drop(self.parent.body.parts[random.randint(0, len(self.parent.body.parts))])
+                        
 
         self.engine.message_log.add_message(death_message, death_message_color)
 

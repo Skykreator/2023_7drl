@@ -7,7 +7,7 @@ import exceptions
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Actor, Entity, Item
+    from entity import Actor, Entity, Item, Part
 
 
 class Action:
@@ -94,6 +94,15 @@ class EquipAction(Action):
     def perform(self) -> None:
         self.entity.equipment.toggle_equip(self.item)
 
+class AttachAction(Action):
+    def __init__(self, entity: Actor, part: Part):
+        super().__init__(entity)
+
+        self.part = part
+
+    def perform(self) -> None:
+        self.entity.body.toggle_equip(self.part)
+
 
 class WaitAction(Action):
     def perform(self) -> None:
@@ -153,7 +162,7 @@ class MeleeAction(ActionWithDirection):
             attack_color = color.enemy_atk
 
         if damage > 0:
-            self.engine.message_log.add_message(f"{attack_desc} for {damage} hit points.", attack_color)
+            self.engine.message_log.add_message(f"{attack_desc} for {damage}.", attack_color)
             target.fighter.hp -= damage
         else:
             self.engine.message_log.add_message(f"{attack_desc} but does no damage.", attack_color)
