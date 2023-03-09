@@ -9,57 +9,135 @@ from components.loot_table import LootTable
 import color
 from entity import Actor, Item
 
-human_heart = Item(char="q", color=color.red, name="Human Heart", part=part.Human_Heart())
+human_heart = Item(char="q", color=color.red, name="Human Heart", part=part.Human_Heart(), description=
+    """
+    It beats.
+    """,)
 
-human_brain = Item(char="m", color=color.red, name="Human Brain", part=part.Human_Brain())
+human_brain = Item(char="m", color=color.red, name="Human Brain", part=part.Human_Brain(), description=
+    """
+    No heavier than a couple books.
+    """,)
 
-human_leg = Item(char="L", color=color.red, name="Human Leg", part=part.Human_Leg())
+human_leg = Item(char="L", color=color.red, name="Human Leg", part=part.Human_Leg(), description=
+    """
+    Thick, tapering down then flaring out again.
+    """,)
 
-human_eye = Item(char="o", color=color.red, name="Human Eye", part=part.Human_Eye())
+human_eye = Item(char="o", color=color.red, name="Human Eye", part=part.Human_Eye(), description=
+    """
+    It stares.
+    """,)
 
-human_tongue = Item(char="U", color=color.red, name="Human Tongue", part=part.Human_Tongue())
+human_tongue = Item(char="U", color=color.red, name="Human Tongue", part=part.Human_Tongue(), description=
+    """
+    Dexterous.
+    """,)
 
-human_torso = Item(char="H", color=color.red, name="Human Torso", part=part.Human_Torso())
+human_torso = Item(char="H", color=color.red, name="Human Torso", part=part.Human_Torso(), description=
+    """
+    Broad and strong, it was not designed for a library.
+    """,)
 
-human_arm = Item(char="\\", color=color.red, name="Human Arm", part=part.Human_Arm())
+human_arm = Item(char="\\", color=color.red, name="Human Arm", part=part.Human_Arm(), description=
+    """
+    It twitches.
+    """,)
 
-human_ear = Item(char="G", color=color.red, name="Human Ear", part=part.Human_Ear())
+human_ear = Item(char="G", color=color.red, name="Human Ear", part=part.Human_Ear(), description=
+    """
+    It listens.
+    """,)
 
-librarian_heart = Item(char="q", color=color.red, name="Librarian Heart", part=part.Librarian_Heart())
+librarian_heart = Item(char="q", color=color.red, name="Librarian Heart", part=part.Librarian_Heart(), description=
+    """
+    It ripples.
+    """,)
 
-librarian_brain = Item(char="m", color=color.red, name="Librarian Brain", part=part.Librarian_Brain())
+librarian_brain = Item(char="m", color=color.red, name="Librarian Brain", part=part.Librarian_Brain(), description=
+    """
+    No heavier than a couple books.
+    """)
 
-librarian_leg = Item(char="L", color=color.red, name="Librarian Leg", part=part.Librarian_Leg())
+librarian_leg = Item(char="L", color=color.red, name="Librarian Leg", part=part.Librarian_Leg(), description=
+    """
+    Short and awkward, an afterthought.
+    """,)
 
-librarian_eye = Item(char="o", color=color.red, name="Librarian Eye", part=part.Librarian_Eye())
+librarian_eye = Item(char="o", color=color.red, name="Librarian Eye", part=part.Librarian_Eye(), description=
+    """
+    The fist-sized eye stares.
+    """,)
 
-librarian_tongue = Item(char="U", color=color.red, name="Librarian Tongue", part=part.Librarian_Tongue())
+librarian_tongue = Item(char="U", color=color.red, name="Librarian Tongue", part=part.Librarian_Tongue(), description=
+    """
+    Long and flexible, it can pronounce every word in every book.
+    """,)
 
-librarian_torso = Item(char="H", color=color.red, name="Librarian Torso", part=part.Librarian_Torso())
+librarian_torso = Item(char="H", color=color.red, name="Librarian Torso", part=part.Librarian_Torso(), description=
+    """
+    Shaped to the furniture.
+    """,)
 
-librarian_arm = Item(char="\\", color=color.red, name="Librarian Arm", part=part.Librarian_Arm())
+librarian_arm = Item(char="\\", color=color.red, name="Librarian Arm", part=part.Librarian_Arm(), description=
+    """
+    Strong enough.
+    """,)
 
-librarian_ear = Item(char="G", color=color.red, name="Librarian Ear", part=part.Librarian_Ear())
+librarian_ear = Item(char="G", color=color.red, name="Librarian Ear", part=part.Librarian_Ear(), description=
+    """
+    It listens.
+    """,)
 
-dwarf_heart = Item(char="q", color=color.red, name="Dwarf Heart", part=part.Dwarf_Heart())
+dwarf_heart = Item(char="q", color=color.red, name="Dwarf Heart", part=part.Dwarf_Heart(), description=
+    """
+    It throbs.
+    """)
 
-dwarf_brain = Item(char="m", color=color.red, name="Dwarf Brain", part=part.Dwarf_Brain())
+dwarf_brain = Item(char="m", color=color.red, name="Dwarf Brain", part=part.Dwarf_Brain(), description=
+    """
+    No heavier than a couple books.
+    """)
 
-dwarf_leg = Item(char="L", color=color.red, name="Dwarf Leg", part=part.Dwarf_Leg())
+dwarf_leg = Item(char="L", color=color.red, name="Dwarf Leg", part=part.Dwarf_Leg(), description=
+    """
+    Stout and powerful.
+    """,)
 
-dwarf_eye = Item(char="o", color=color.red, name="Dwarf Eye", part=part.Dwarf_Eye())
+dwarf_eye = Item(char="o", color=color.red, name="Dwarf Eye", part=part.Dwarf_Eye(), description=
+    """
+    It stays focused, even in the dark.
+    """,)
 
-dwarf_tongue = Item(char="U", color=color.red, name="Dwarf Tongue", part=part.Dwarf_Tongue())
+dwarf_tongue = Item(char="U", color=color.red, name="Dwarf Tongue", part=part.Dwarf_Tongue(), description=
+    """
+    Bulky, warping speech.
+    """,)
 
-dwarf_torso = Item(char="H", color=color.red, name="Dwarf Torso", part=part.Dwarf_Torso())
+dwarf_torso = Item(char="H", color=color.red, name="Dwarf Torso", part=part.Dwarf_Torso(), description=
+    """
+    Overfortified for its size.
+    """,)
 
-dwarf_arm = Item(char="\\", color=color.red, name="Dwarf Arm", part=part.Dwarf_Arm())
+dwarf_arm = Item(char="\\", color=color.red, name="Dwarf Arm", part=part.Dwarf_Arm(),  description=
+    """
+    It could bear the weight of a man.
+    """,)
 
-dwarf_ear = Item(char="G", color=color.red, name="Dwarf Ear", part=part.Dwarf_Ear())
+dwarf_ear = Item(char="G", color=color.red, name="Dwarf Ear", part=part.Dwarf_Ear(),  description=
+    """
+    Knobbly.
+    """,)
 
-max_arm = Item(char="\\", color=color.red, name="Max's Arm", part=part.Max_Arm())
+max_arm = Item(char="\\", color=color.red, name="Max's Arm", part=part.Max_Arm(), description=
+    """
+    Strong with a strong orange hue and a strong orange scent.
+    """,)
 
-max_leg = Item(char="G", color=color.red, name="Max's Leg", part=part.Max_Leg())
+max_leg = Item(char="G", color=color.red, name="Max's Leg", part=part.Max_Leg(), description=
+    """
+    Strong with a strong orange hue and a strong orange scent.
+    """,)
 
 base_loot = LootTable(inventory_chance=0.1, inventory_rolls=3,body_chance=0.8,body_rolls=1)
 
@@ -75,6 +153,10 @@ player = Actor(
     level=Level(level_up_base=200),
     body = Body(parts=[human_leg, human_leg,human_arm, human_arm, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_heart, human_brain]),
     loot_table=base_loot,
+    description=
+    """
+    JTP
+    """,
 )
 
 # H:16 M:16 P:6 D:6 SP:13 SD:13
@@ -89,6 +171,10 @@ librarian = Actor(
     level=Level(xp_given=35),
     body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
     loot_table=base_loot,
+    description=
+    """
+    The librarian's cyclopean eye stares back at you.
+    """,    
 )
 
 # H:16 M:16 P:6 D:6 SP:13 SD:13
@@ -103,6 +189,10 @@ mad_librarian = Actor(
     level=Level(xp_given=35),
     body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
     loot_table=base_loot,
+    description=
+    """
+    The librarian grips the shredded remains of some ancient tome.
+    """,
 )
 
 # H:25 M:14 P:14 D:14 SP:0 SD:3
@@ -117,6 +207,10 @@ dwarf = Actor(
     level=Level(xp_given=100),
     body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
+    description=
+    """
+    The dwarf rushes along, paying you no heed.
+    """,
 )
 
 # H:25 M:14 P:14 D:14 SP:0 SD:3
@@ -131,6 +225,10 @@ mad_dwarf = Actor(
     level=Level(xp_given=100),
     body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
+    description=
+    """
+    The dwarf's eyes dart around manically, then focus on you.
+    """,
 )
 
 # H:31 M:14 P:20 D:20 SP:0 SD:3
@@ -145,6 +243,11 @@ max = Actor(
     level=Level(xp_given=100),
     body = Body(parts=[max_leg, max_leg, max_arm, max_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
+    description=
+    """
+    This dwarf is covered in orange paraphenalia. 
+    His limbs have grown strong from the oranges.
+    """,
 )
 
 orc = Actor(
@@ -158,6 +261,10 @@ orc = Actor(
     level=Level(xp_given=35),
     body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm]),
     loot_table=base_loot,
+    description=
+    """
+    It looks like something out of one of the infinite tomes that cover each wall.
+    """,
 )
 troll = Actor(
     char="T",
@@ -170,42 +277,75 @@ troll = Actor(
     level=Level(xp_given=100),
     body = Body(parts=[human_heart, human_brain, human_leg, human_leg, human_eye, human_eye, human_tongue, human_torso, human_ear, human_ear, human_arm, human_arm]),
     loot_table=base_loot,
+    description=
+    """
+    It looks like something out of one of the infinite tomes that cover each wall.
+    """,
 )
 
 confusion_scroll = Item(
     char="~",
     color=(207, 63, 255),
-    name="Confusion Scroll",
+    name="Tome of Confusion",
     consumable=consumable.ConfusionConsumable(number_of_turns=10),
+    description=
+    """
+    The pages of gibberish are decipherable only by the unconscious mind.
+    """,
 )
 fireball_scroll = Item(
     char="~",
     color=(255, 0, 0),
-    name="Fireball Scroll",
+    name="Tome of Fire",
     consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
+    description=
+    """
+    The librarians were the first to wield fire as tool and weapon.
+    """,
 )
 health_potion = Item(
     char="!",
     color=(127, 0, 255),
     name="Health Potion",
     consumable=consumable.HealingConsumable(amount=4),
+    description=
+    """
+    The opaque fluid churns within the vial
+    """,
 )
 lightning_scroll = Item(
     char="~",
     color=(255, 255, 0),
-    name="Lightning Scroll",
+    name="Tome of Lightning",
     consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
+    description=
+    """
+    bababadalgharaghtakamminarronnkonnbronntonnerronntuonnthunntrovarrhounawnskawntoohoohoordenenthurnuk!
+    """,
 )
 
-dagger = Item(char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger())
+dagger = Item(char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger(), description=
+    """
+    The blade is better suited to combat than ritual.
+    """,)
 
-sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword())
+sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword(), description=
+    """
+    The blade is forged from the ores in the foundations of the library.
+    """,)
 
 leather_armor = Item(
     char="[",
     color=(139, 69, 19),
-    name="Leather Armor",
+    name="Leather Hide",
     equippable=equippable.LeatherArmor(),
+    description=
+    """
+    The hide of an unknown creature.
+    """,
 )
 
-chain_mail = Item(char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail())
+chain_mail = Item(char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail(), description=
+    """
+    Time has dulled its links, but none are broken.
+    """,)

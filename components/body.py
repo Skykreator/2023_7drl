@@ -105,6 +105,10 @@ class Body(BaseComponent):
 
     def unequip(self, part: Part, add_message: bool) -> None:
         self.parts.remove(part)
+        if len(self.parent.inventory.items) < self.parent.inventory.capacity:
+            self.parent.inventory.items.append(part.parent)
+        else:
+            self.drop(part)
         if add_message:
             self.unequip_message(part.parent.name)
 

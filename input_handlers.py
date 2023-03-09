@@ -309,7 +309,9 @@ class InventoryEventHandler(AskUserEventHandler):
     What happens then depends on the subclass.
     """
 
-    TITLE = "<missing title>"
+    TITLE = "Inventory"
+
+    selected_ind = -1
 
     def on_render(self, console: tcod.Console) -> None:
         """Render an inventory menu, which displays the items in the inventory, and the letter to select them.
@@ -324,14 +326,14 @@ class InventoryEventHandler(AskUserEventHandler):
         if height <= 3:
             height = 3
 
-        if self.engine.player.x <= 30:
-            x = 40
-        else:
-            x = 0
-
+        x = 0
         y = 0
 
-        width = len(self.TITLE) + 4
+        longest_item = 0
+        for item in self.engine.player.inventory.items:
+            longest_item = max(longest_item, len(item.name))
+
+        width = max(len(self.TITLE), longest_item + 8) + 4 # make dynamic
 
         console.draw_frame(
             x=x,
@@ -359,51 +361,187 @@ class InventoryEventHandler(AskUserEventHandler):
         else:
             console.print(x + 1, y + 1, "(Empty)")
 
+        if self.selected_ind >= 0:
+            item = self.engine.player.inventory.items[self.selected_ind]
+            console.draw_frame(
+            x=width + 2,
+            y=y + self.selected_ind + 1,
+            width=max(len(item.name), 11) + 4, # 11 is len("(u) unequip")
+            height=5, # place holder
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            )
+            console.print(width + 3, y + self.selected_ind + 1, f" {item.name} ", fg=(0, 0, 0), bg=(255, 255, 255))
+
+            index = self.selected_ind + 2
+            if item.consumable:
+                console.print(width + 4, y + index, "(c) consume")
+                index += 1
+            console.print(width + 4, y + index, "(d) drop")
+            index += 1
+            if (item.equippable and not self.engine.player.equipment.item_is_equipped(item)) or (item.part and not item.part in self.engine.player.body.parts):
+                console.print(width + 4, y + index, "(e) equip")
+                index += 1
+            console.print(width + 4, y + index, "(l) look")
+            index += 1
+            if (item.equippable and self.engine.player.equipment.item_is_equipped(item)) or (item.part and item.part in self.engine.player.body.parts):
+                console.print(width + 4, y + index, "(u) unequip")
+                index += 1
+
+
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         player = self.engine.player
         key = event.sym
         index = key - tcod.event.K_a
 
-        if 0 <= index <= 26:
-            try:
-                selected_item = player.inventory.items[index]
-            except IndexError:
+        if self.selected_ind < 0 and 0 <= index <= 26:
+            if index < len(player.inventory.items):
+                self.selected_ind = index
+            else:
                 self.engine.message_log.add_message("Invalid entry.", color.invalid)
-                return None
-            return self.on_item_selected(selected_item)
+            return None
+        else:
+            item = self.engine.player.inventory.items[self.selected_ind]
+            if index == 3: # d for drop
+                return actions.DropItem(self.engine.player, item)
+            if index == 11: # l for look
+                return PopupMessage(self, item.description)
+            if item.equippable:
+                if self.engine.player.equipment.item_is_equipped(item):
+                    if index == 20: # u for unequip
+                        return actions.EquipAction(self.engine.player, item)
+                else:
+                    if index == 4: # e for equip
+                        return actions.EquipAction(self.engine.player, item)
+            if item.part:
+                if item.part in self.engine.player.body.parts:
+                    if index == 20: # u for unequip
+                        return actions.AttachAction(self.engine.player, item.part)
+                else:
+                    if index == 4: # e for equip
+                        return actions.AttachAction(self.engine.player, item.part)
+            if item.consumable and index == 2: # c for consume
+                return item.consumable.get_action(self.engine.player)
+            self.selected_ind = -1
         return super().ev_keydown(event)
 
-    def on_item_selected(self, item: Item) -> Optional[ActionOrHandler]:
-        """Called when the user selects a valid item."""
-        raise NotImplementedError()
 
+class BodyEventHandler(AskUserEventHandler):
+    """This handler lets the user select an item.
 
-class InventoryActivateHandler(InventoryEventHandler):
-    """Handle using an inventory item."""
+    What happens then depends on the subclass.
+    """
 
-    TITLE = "Select an item to use"
+    TITLE = "Body"
 
-    def on_item_selected(self, item: Item) -> Optional[ActionOrHandler]:
-        if item.consumable:
-            # Return the action for the selected item.
-            return item.consumable.get_action(self.engine.player)
-        elif item.equippable:
-            return actions.EquipAction(self.engine.player, item)
-        elif item.part:
-            return actions.AttachAction(self.engine.player, item.part)
+    selected_ind = -1
+
+    menu_parts = []
+
+    def on_render(self, console: tcod.Console) -> None:
+        """Render an inventory menu, which displays the items in the inventory, and the letter to select them.
+        Will move to a different position based on where the player is located, so the player can always see where
+        they are.
+        """
+        super().on_render(console)
+
+        x = 0
+        y = 0
+
+        self.menu_parts = []
+        longest_part = 0
+        for item in self.engine.player.inventory.items:
+            if item.part:
+                self.menu_parts.append(item.part)
+                longest_part = max(longest_part, len(item.name))
+
+        for part in self.engine.player.body.parts:
+            self.menu_parts.append(part)
+            longest_part = max(longest_part, len(part.parent.name))
+
+        height = len(self.menu_parts) + 2
+
+        if height <= 3:
+            height = 3
+
+        width = max(len(self.TITLE), longest_part + 8) + 4
+
+        console.draw_frame(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+        )
+        console.print(x + 1, y, f" {self.TITLE} ", fg=(0, 0, 0), bg=(255, 255, 255))
+
+        if len(self.menu_parts) > 0:
+            for i, part in enumerate(self.menu_parts):
+                part_key = chr(ord("a") + i)
+
+                part_string = f"({part_key}) {part.parent.name}"
+
+                if part in self.engine.player.body.parts:
+                    part_string = part_string + " (E)"
+
+                console.print(x + 1, y + i + 1, part_string)
         else:
-            return None
+            console.print(x + 1, y + 1, "(Empty)")
+
+        if self.selected_ind >= 0:
+            part = self.menu_parts[self.selected_ind]
+            console.draw_frame(
+            x=width + 2,
+            y=y + self.selected_ind + 1,
+            width=max(len(item.name), 11) + 4, # 11 is len("(u) unequip")
+            height=5, # place holder
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            )
+            console.print(width + 3, y + self.selected_ind + 1, f" {part.parent.name} ", fg=(0, 0, 0), bg=(255, 255, 255))
+
+            index = self.selected_ind + 2
+            console.print(width + 4, y + index, "(d) drop")
+            index += 1
+            if not part in self.engine.player.body.parts:
+                console.print(width + 4, y + index, "(e) equip")
+                index += 1
+            console.print(width + 4, y + index, "(l) look")
+            index += 1
+            if  part in self.engine.player.body.parts:
+                console.print(width + 4, y + index, "(u) unequip")
+                index += 1
 
 
-class InventoryDropHandler(InventoryEventHandler):
-    """Handle dropping an inventory item."""
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        key = event.sym
+        index = key - tcod.event.K_a
 
-    TITLE = "Select an item to drop"
-
-    def on_item_selected(self, item: Item) -> Optional[ActionOrHandler]:
-        """Drop this item."""
-        return actions.DropItem(self.engine.player, item)
-
+        if self.selected_ind < 0 and 0 <= index <= 26:
+            if index < len(self.menu_parts):
+                self.selected_ind = index
+            else:
+                self.engine.message_log.add_message("Invalid entry.", color.invalid)
+            return None 
+        else:
+            part = self.menu_parts[self.selected_ind]
+            if index == 3: # d for drop
+                return actions.DropItem(self.engine.player, part)
+            if index == 11: # l for look
+                return PopupMessage(self, part.parent.description)
+            if part in self.engine.player.body.parts:
+                if index == 20: # u for unequip
+                    return actions.AttachAction(self.engine.player, part)
+            else:
+                if index == 4: # e for equip
+                    return actions.AttachAction(self.engine.player, part)
+            self.selected_ind = -1
+        return super().ev_keydown(event)
+    
 
 class SelectIndexHandler(AskUserEventHandler):
     """Handles asking the user for an index on the map."""
@@ -539,9 +677,9 @@ class MainGameEventHandler(EventHandler):
             action = PickupAction(player)
 
         elif key == tcod.event.K_i:
-            return InventoryActivateHandler(self.engine)
-        elif key == tcod.event.K_d:
-            return InventoryDropHandler(self.engine)
+            return InventoryEventHandler(self.engine)
+        elif key == tcod.event.K_p:
+            return BodyEventHandler(self.engine)
         elif key == tcod.event.K_c:
             return CharacterScreenEventHandler(self.engine)
         elif key == tcod.event.K_SLASH:
