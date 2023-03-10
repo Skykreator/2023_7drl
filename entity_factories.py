@@ -6,6 +6,7 @@ from components.inventory import Inventory
 from components.level import Level
 from components.body import Body
 from components.loot_table import LootTable
+from components.stackable import Stackable
 import color
 from entity import Actor, Item
 
@@ -139,7 +140,134 @@ max_leg = Item(char="G", color=color.red, name="Max's Leg", part=part.Max_Leg(),
     Strong with a strong orange hue and a strong orange scent.
     """,)
 
+phantom_heart = Item(char="q", color=color.red, name="Phantom Heart", part=part.Phantom_Heart(), description=
+    """
+    It pulses.
+    """,)
+
+phantom_brain = Item(char="m", color=color.red, name="Phantom Brain", part=part.Phantom_Brain(), description=
+    """
+    Almost transparent.
+    """,)
+
+phantom_leg = Item(char="L", color=color.red, name="Phantom Leg", part=part.Phantom_Leg(), description=
+    """
+    Visible out of the corner of your eye.
+    """,)
+
+phantom_eye = Item(char="o", color=color.red, name="Phantom Eye", part=part.Phantom_Eye(), description=
+    """
+    It stares at something deeper inside.
+    """,)
+
+phantom_tongue = Item(char="U", color=color.red, name="Phantom Tongue", part=part.Phantom_Tongue(), description=
+    """
+    Fluent in forgotten tongues.
+    """,)
+
+phantom_torso = Item(char="H", color=color.red, name="Phantom Torso", part=part.Phantom_Torso(), description=
+    """
+    Sturdy, yet ephemeral.
+    """,)
+
+phantom_arm = Item(char="\\", color=color.red, name="Phantom Arm", part=part.Phantom_Arm(), description=
+    """
+    It decieves the conscious mind.
+    """,)
+
+phantom_ear = Item(char="G", color=color.red, name="Phantom Ear", part=part.Phantom_Ear(), description=
+    """
+    Not limited to physical vibrations.
+    """,)
+
 base_loot = LootTable(inventory_chance=0.1, inventory_rolls=3,body_chance=0.8,body_rolls=1)
+
+confusion_scroll = Item(
+    char="~",
+    color=(207, 63, 255),
+    name="Tome of Confusion",
+    consumable=consumable.ConfusionConsumable(number_of_turns=10),
+    description=
+    """
+    The pages of gibberish are decipherable only by the unconscious mind.
+    """,
+)
+fireball_scroll = Item(
+    char="~",
+    color=(255, 0, 0),
+    name="Tome of Fire",
+    consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
+    description=
+    """
+    The librarians were the first to wield fire as tool and weapon.
+    """,
+)
+health_potion = Item(
+    char="!",
+    color=(127, 0, 255),
+    name="Health Potion",
+    consumable=consumable.HealingConsumable(amount=4),
+    description=
+    """
+    The opaque fluid churns within the vial
+    """,
+)
+lightning_scroll = Item(
+    char="~",
+    color=(255, 255, 0),
+    name="Tome of Lightning",
+    consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
+    description=
+    """
+    bababadalgharaghtakamminarronnkonnbronntonnerronntuonnthunntrovarrhounawnskawntoohoohoordenenthurnuk!
+    """,
+)
+
+dagger = Item(char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger(), description=
+    """
+    The blade is better suited to combat than ritual.
+    """,)
+
+sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword(), description=
+    """
+    The blade is forged from the ores in the foundations of the library.
+    """,)
+
+leather_armor = Item(
+    char="[",
+    color=(139, 69, 19),
+    name="Leather Hide",
+    equippable=equippable.LeatherArmor(),
+    description=
+    """
+    The hide of an unknown creature.
+    """,
+)
+
+chain_mail = Item(char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail(), description=
+    """
+    Time has dulled its links, but none are broken.
+    """,)
+
+sacrificial_dagger = Item(char="/", color=color.spiritual, name="Sacrificial Dagger", equippable=equippable.SacrificialDagger(), description=
+    """
+    The bare obsidian is without blemish.
+    """,)
+
+ornate_shell = Item(char="c", color=color.spiritual, name="Ornate Shell", stack=Stackable(5,5), description=
+    """
+    Too small and too big.
+    """,)
+
+glass_shard = Item(char="w", color=color.spiritual, name="Glass Shard", stack=Stackable(5,3), description=
+    """
+    Its reflections don't match your surroundings.
+    """,)
+
+torn_scrap = Item(char="=", color=color.spiritual, name="Torn Scrap", stack=Stackable(5,1), description=
+    """
+    Covered in smudge glyphs, undecipherable.
+    """,)
 
 # H:20 M:10 P:10 D:10 SP:10 SD:10
 player = Actor(
@@ -282,70 +410,3 @@ troll = Actor(
     It looks like something out of one of the infinite tomes that cover each wall.
     """,
 )
-
-confusion_scroll = Item(
-    char="~",
-    color=(207, 63, 255),
-    name="Tome of Confusion",
-    consumable=consumable.ConfusionConsumable(number_of_turns=10),
-    description=
-    """
-    The pages of gibberish are decipherable only by the unconscious mind.
-    """,
-)
-fireball_scroll = Item(
-    char="~",
-    color=(255, 0, 0),
-    name="Tome of Fire",
-    consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
-    description=
-    """
-    The librarians were the first to wield fire as tool and weapon.
-    """,
-)
-health_potion = Item(
-    char="!",
-    color=(127, 0, 255),
-    name="Health Potion",
-    consumable=consumable.HealingConsumable(amount=4),
-    description=
-    """
-    The opaque fluid churns within the vial
-    """,
-)
-lightning_scroll = Item(
-    char="~",
-    color=(255, 255, 0),
-    name="Tome of Lightning",
-    consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
-    description=
-    """
-    bababadalgharaghtakamminarronnkonnbronntonnerronntuonnthunntrovarrhounawnskawntoohoohoordenenthurnuk!
-    """,
-)
-
-dagger = Item(char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger(), description=
-    """
-    The blade is better suited to combat than ritual.
-    """,)
-
-sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword(), description=
-    """
-    The blade is forged from the ores in the foundations of the library.
-    """,)
-
-leather_armor = Item(
-    char="[",
-    color=(139, 69, 19),
-    name="Leather Hide",
-    equippable=equippable.LeatherArmor(),
-    description=
-    """
-    The hide of an unknown creature.
-    """,
-)
-
-chain_mail = Item(char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail(), description=
-    """
-    Time has dulled its links, but none are broken.
-    """,)

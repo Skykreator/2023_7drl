@@ -27,8 +27,8 @@ class Part(BaseComponent):
         defense_bonus: int = 0,
         
     ):
-        self.part_type = PartType
-        self.form = Form
+        self.part_type = part_type
+        self.form = form
         #self.ability = Ability
         self.health_bonus = health_bonus
         self.current_health = health_bonus

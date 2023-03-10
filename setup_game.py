@@ -45,10 +45,13 @@ def new_game() -> Engine:
     engine.game_world.generate_floor()
     engine.update_fov()
 
-    engine.message_log.add_message("Hello and welcome, adventurer, to yet another dungeon!", color.welcome_text)
+    engine.message_log.add_message("You wake up in a library.", color.welcome_text)
 
     dagger = copy.deepcopy(entity_factories.dagger)
     leather_armor = copy.deepcopy(entity_factories.leather_armor)
+    sacrificial_dagger = copy.deepcopy(entity_factories.sacrificial_dagger)
+    glass_shard = copy.deepcopy(entity_factories.glass_shard)
+    glass_shard.stack.stack = 5
 
     dagger.parent = player.inventory
     leather_armor.parent = player.inventory
@@ -58,6 +61,9 @@ def new_game() -> Engine:
 
     player.inventory.items.append(leather_armor)
     player.equipment.toggle_equip(leather_armor, add_message=False)
+
+    player.inventory.items.append(glass_shard)
+    player.inventory.items.append(sacrificial_dagger)
 
     return engine
 
@@ -80,14 +86,14 @@ class MainMenu(input_handlers.BaseEventHandler):
         console.print(
             console.width // 2,
             console.height // 2 - 4,
-            "TOMBS OF THE ANCIENT KINGS",
+            "BABEL / OUT ON A LIMB",
             fg=color.menu_title,
             alignment=tcod.CENTER,
         )
         console.print(
             console.width // 2,
             console.height - 2,
-            "By (Your name here)",
+            "By Ol' Arms",
             fg=color.menu_title,
             alignment=tcod.CENTER,
         )

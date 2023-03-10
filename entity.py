@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from components.body import Body
     from components.part import Part
     from components.loot_table import LootTable
+    from components.stackable import Stackable
     from game_map import GameMap
 
 T = TypeVar("T", bound="Entity")
@@ -158,6 +159,7 @@ class Item(Entity):
         equippable: Optional[Equippable] = None,
         part: Optional[Part] = None,
         description: str="<Unwritten>",
+        stack: Optional[Stackable] = None,
     ):
         super().__init__(
             x=x,
@@ -184,4 +186,9 @@ class Item(Entity):
 
         if self.part:
             self.part.parent = self
+        
+        self.stack = stack
+
+        if self.stack:
+            self.stack.parent = self
         

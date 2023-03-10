@@ -19,6 +19,7 @@ class Equippable(BaseComponent):
         defense_bonus: int = 0,
         spiritual_power_bonus: int = 0,
         spiritual_defense_bonus: int = 0,
+        sacrificial: bool = False,
     ):
         self.equipment_type = equipment_type
 
@@ -26,6 +27,7 @@ class Equippable(BaseComponent):
         self.defense_bonus = defense_bonus
         self.spiritual_power_bonus = spiritual_power_bonus
         self.spiritual_defense_bonus = spiritual_defense_bonus
+        self.sacrificial = sacrificial
 
 
 class Dagger(Equippable):
@@ -46,3 +48,7 @@ class LeatherArmor(Equippable):
 class ChainMail(Equippable):
     def __init__(self) -> None:
         super().__init__(equipment_type=EquipmentType.ARMOR, defense_bonus=3)
+
+class SacrificialDagger(Equippable):
+    def __init__(self) -> None:
+        super().__init__(equipment_type=EquipmentType.WEAPON, power_bonus=1, spiritual_power_bonus=3,sacrificial=True)

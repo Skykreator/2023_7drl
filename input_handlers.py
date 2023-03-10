@@ -9,6 +9,7 @@ from actions import Action, BumpAction, PickupAction, WaitAction
 import actions
 import color
 import exceptions
+from forms import Form
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -356,6 +357,9 @@ class InventoryEventHandler(AskUserEventHandler):
 
                 if is_equipped:
                     item_string = f"{item_string} (E)"
+                
+                if item.stack:
+                    item_string = f"{item_string} x{item.stack.stack}"
 
                 console.print(x + 1, y + i + 1, item_string)
         else:
@@ -496,7 +500,7 @@ class BodyEventHandler(AskUserEventHandler):
             console.draw_frame(
             x=width + 2,
             y=y + self.selected_ind + 1,
-            width=max(len(item.name), 11) + 4, # 11 is len("(u) unequip")
+            width=max(len(part.parent.name), 11) + 4, # 11 is len("(u) unequip")
             height=5, # place holder
             clear=True,
             fg=(255, 255, 255),
@@ -601,6 +605,11 @@ class LookHandler(SelectIndexHandler):
 
     def on_index_selected(self, x: int, y: int) -> MainGameEventHandler:
         """Return to main handler."""
+        for item in self.engine.game_map.items:
+            if x == item.x and y == item.y:
+                return PopupMessage(self, item.description)
+        if self.engine.game_map.get_actor_at_location(x,y):
+            return PopupMessage(self, self.engine.game_map.get_actor_at_location(x,y).description)
         return MainGameEventHandler(self.engine)
 
 
@@ -649,6 +658,127 @@ class AreaRangedAttackHandler(SelectIndexHandler):
     def on_index_selected(self, x: int, y: int) -> Optional[Action]:
         return self.callback((x, y))
 
+class RitualHandler(AskUserEventHandler):
+    
+    TITLE = "Select Limb to Sacrifice"
+
+    flesh_parts = []
+    offering_inds = []
+
+    selected_ind = -1
+    can_ritual = False
+
+    def on_render(self, console: tcod.Console) -> None:
+        """Render an inventory menu, which displays the items in the inventory, and the letter to select them.
+        Will move to a different position based on where the player is located, so the player can always see where
+        they are.
+        """
+        super().on_render(console)
+
+        x = 0
+        y = 0
+
+        ritual_equip = False
+        ritual_offering = False
+        ritual_limb = False
+
+        self.flesh_parts = []
+        self.offering_inds = []
+        for i, item in enumerate(self.engine.player.inventory.items):
+            if item.equippable and item.equippable.sacrificial:
+                ritual_equip = True
+            if item.stack and item.stack.quality > 0:
+                ritual_offering = True
+                self.offering_inds.append(i)
+        longest_part = 0
+
+        for part in self.engine.player.body.parts:
+            longest_part = max(longest_part, len(part.parent.name))
+            if part.form == Form.FLESH:
+                ritual_limb = True
+                self.flesh_parts.append(part)
+
+        self.can_ritual = True
+        if not (ritual_equip and ritual_limb and ritual_offering):
+            message = "Missing: "
+            if not ritual_equip:
+                message = message + "an implement "
+            if not ritual_limb:
+                message = message + "living flesh "
+            if not ritual_offering:
+                message = message + "an offering "
+            console.draw_frame(
+                x=x,
+                y=y,
+                width=len(message) + 4,
+                height=3,
+                clear=True,
+                fg=(255, 255, 255),
+                bg=(0, 0, 0),
+            )
+            console.print(x + 1, y + 1, f" {message} ")
+            self.can_ritual = False
+            return
+
+        height = len(self.flesh_parts) + 2
+
+        if height <= 3:
+            height = 3
+
+        width = max(len(self.TITLE), longest_part + 8) + 4
+        console.draw_frame(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+        )
+        console.print(x + 1, y, f" {self.TITLE} ")
+        for i, part in enumerate(self.flesh_parts):
+                part_key = chr(ord("a") + i)
+
+                part_string = f"({part_key}) {part.parent.name}"
+
+                console.print(x + 1, y + i + 1, part_string)
+
+        if self.selected_ind >= 0:
+            part = self.flesh_parts[self.selected_ind]
+            console.draw_frame(
+            x=width + 2,
+            y=y + self.selected_ind + 1,
+            width=max(len(part.parent.name), 11) + 4, # 11 is len("(c) confirm")
+            height=3, 
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            )
+            console.print(width + 3, y + self.selected_ind + 1, f" {part.parent.name} ", fg=(0, 0, 0), bg=(255, 255, 255))
+
+            index = self.selected_ind + 2
+            console.print(width + 4, y + index, "(c) confirm")
+
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        key = event.sym
+        index = key - tcod.event.K_a
+        if not self.can_ritual:
+            return MainGameEventHandler(self.engine)
+
+        if self.selected_ind < 0 and 0 <= index <= 26:
+            if index < len(self.flesh_parts):
+                self.selected_ind = index
+            else:
+                self.engine.message_log.add_message("Invalid entry.", color.invalid)
+            return None 
+        else:
+            part = self.flesh_parts[self.selected_ind]
+            self.selected_ind = -1
+            if index == 2: # c for confirm
+                actions.SacrificePart(self.engine.player, part, self.offering_inds).perform()
+                return MainGameEventHandler(self.engine)
+        return super().ev_keydown(event)
 
 class MainGameEventHandler(EventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
@@ -684,6 +814,8 @@ class MainGameEventHandler(EventHandler):
             return CharacterScreenEventHandler(self.engine)
         elif key == tcod.event.K_SLASH:
             return LookHandler(self.engine)
+        elif key == tcod.event.K_r:
+            return RitualHandler(self.engine)
 
         # No valid key was pressed
         return action

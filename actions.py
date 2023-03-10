@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple, List
 
 import color
 import exceptions
+from part_types import PartType
+import copy
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -45,6 +47,11 @@ class PickupAction(Action):
 
         for item in self.engine.game_map.items:
             if actor_location_x == item.x and actor_location_y == item.y:
+                if item.stack:
+                    for inv_item in inventory.items:
+                        if inv_item.stack and inv_item.name == item.name:
+                            inv_item.stack += item.stack
+                            return
                 if len(inventory.items) >= inventory.capacity:
                     raise exceptions.Impossible("Your inventory is full.")
 
@@ -195,3 +202,57 @@ class BumpAction(ActionWithDirection):
 
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
+
+class SacrificePart(Action):
+    def __init__(self, entity: Actor, part: Part, offering_inds: List[int]):
+        super().__init__(entity)
+        self.part = part
+        self.offerings: List[Item] = []
+        for ind in offering_inds:
+            self.offerings.append(self.entity.inventory.items[ind])
+    
+    def perform(self) -> None:
+        radius = 4 + self.part.current_health
+        max_quality = 25 # const
+        sum_quality = 0
+        for offering in self.offerings:
+            if sum_quality < max_quality:
+                ideal_amount = int((max_quality-sum_quality) / offering.stack.quality)
+                actual = min(ideal_amount, offering.stack.stack)
+                sum_quality += actual * offering.stack.quality
+                offering.stack.stack -= actual
+                if offering.stack.stack == 0:
+                    self.entity.inventory.items.remove(offering)
+        import entity_factories
+        if self.part.part_type == PartType.ARM:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_arm).part)
+        elif self.part.part_type == PartType.BRAIN:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_brain).part)
+        elif self.part.part_type == PartType.EAR:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_ear).part)
+        elif self.part.part_type == PartType.EYE:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_eye).part)
+        elif self.part.part_type == PartType.HEART:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_heart).part)
+        elif self.part.part_type == PartType.LEG:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_leg).part)
+        elif self.part.part_type == PartType.TONGUE:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_tongue).part)
+        elif self.part.part_type == PartType.TORSO:
+            self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_torso).part)
+        self.entity.body.parts.remove(self.part)
+
+        
+        # replace part
+        damage = 10 + int(sum_quality * 1.5)
+        self.engine.message_log.add_message(f"The flesh explodes in a burst of energy", color.spiritual)
+        damaged_actors: List[Actor] = []
+        for actor in self.engine.game_map.actors:
+            if actor.distance(self.entity.x, self.entity.y) <= radius and not actor == self.entity:
+                damaged_actors.append(actor)
+        for actor in damaged_actors:
+            self.engine.message_log.add_message(
+                f"The {actor.name} is engulfed the explosion, taking {damage} damage!"
+            )
+            actor.fighter.take_damage(damage)
+

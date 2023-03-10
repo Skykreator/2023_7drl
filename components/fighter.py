@@ -138,23 +138,26 @@ class Fighter(BaseComponent):
         self.parent.color = (191, 0, 0)
         self.parent.blocks_movement = False
         self.parent.ai = None
-        self.parent.name = f"remains of {self.parent.name}"
         self.parent.render_order = RenderOrder.CORPSE
 
+        self.engine.message_log.add_message(death_message, death_message_color)
+        
         if self.parent.loot_table:
             if self.parent.inventory:
                 for _ in range(self.parent.loot_table.inventory_rolls):
                     if len(self.parent.inventory.items) > 0:
                         if random.random() < self.parent.loot_table.inventory_chance:
-                            self.parent.inventory.drop(self.parent.inventory.items[random.randint(0, len(self.parent.inventory.items) - 1)])
+                            ind = random.randint(0, len(self.parent.inventory.items) - 1)
+                            if self.parent.inventory.items[ind].stack:
+                                self.parent.inventory.items[ind].stack.stack = int(self.parent.inventory.items[ind].stack.stack * (0.8 + random.random() * 0.8))
+                            self.parent.inventory.drop(self.parent.inventory.items[ind])
             if self.parent.body:
                 for _ in range(self.parent.loot_table.body_rolls):
                     if len(self.parent.body.parts) > 0:
                         if random.random() < self.parent.loot_table.body_chance:
                             self.parent.body.drop(self.parent.body.parts[random.randint(0, len(self.parent.body.parts) - 1)])
                         
-
-        self.engine.message_log.add_message(death_message, death_message_color)
+        self.parent.name = f"remains of {self.parent.name}"
 
         self.engine.player.level.add_xp(self.parent.level.xp_given)
 
