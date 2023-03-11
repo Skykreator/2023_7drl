@@ -10,6 +10,7 @@ import actions
 import color
 import exceptions
 from forms import Form
+from part_types import PartType
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -668,6 +669,15 @@ class RitualHandler(AskUserEventHandler):
     selected_ind = -1
     can_ritual = False
 
+    part_to_qual = {PartType.ARM : 20,
+                    PartType.BRAIN : 40,
+                    PartType.EAR : 15,
+                    PartType.EYE : 15,
+                    PartType.HEART : 50,
+                    PartType.LEG : 20,
+                    PartType.TONGUE : 15,
+                    PartType.TORSO : 30,}
+
     def on_render(self, console: tcod.Console) -> None:
         """Render an inventory menu, which displays the items in the inventory, and the letter to select them.
         Will move to a different position based on where the player is located, so the player can always see where
@@ -682,21 +692,24 @@ class RitualHandler(AskUserEventHandler):
         ritual_offering = False
         ritual_limb = False
 
+        offering_quality = 0
         self.flesh_parts = []
         self.offering_inds = []
         for i, item in enumerate(self.engine.player.inventory.items):
             if item.equippable and item.equippable.sacrificial:
                 ritual_equip = True
             if item.stack and item.stack.quality > 0:
-                ritual_offering = True
                 self.offering_inds.append(i)
+                offering_quality += item.stack.stack * item.stack.quality
         longest_part = 0
 
         for part in self.engine.player.body.parts:
             longest_part = max(longest_part, len(part.parent.name))
             if part.form == Form.FLESH:
                 ritual_limb = True
-                self.flesh_parts.append(part)
+                if offering_quality >= self.part_to_qual[part.part_type]:
+                    ritual_offering = True
+                    self.flesh_parts.append(part)
 
         self.can_ritual = True
         if not (ritual_equip and ritual_limb and ritual_offering):

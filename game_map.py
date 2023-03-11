@@ -21,6 +21,7 @@ class GameMap:
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
 
         self.visible = np.full((width, height), fill_value=False, order="F")  # Tiles the player can currently see
+        self.loaded = np.full((width, height), fill_value=False, order="F")  # Tiles that are loaded
         self.explored = np.full((width, height), fill_value=False, order="F")  # Tiles the player has seen before
 
         self.downstairs_location = (0, 0)

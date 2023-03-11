@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[("data", "data")],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -26,6 +26,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.zipfiles,
+    a.datas,
     [],
     name='main',
     debug=False,
@@ -40,14 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='NONE',
+    icon=['icon.ico'],
 )
-coll = COLLECT(
-    exe,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name=PROJECT_NAME,  # Name of the distribution directory.
-)
-

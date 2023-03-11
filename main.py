@@ -15,6 +15,7 @@ def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
         handler.engine.save_as(filename)
         print("Game saved.")
 
+# build with -> pyinstaller main.py -F -i icon.ico -w
 
 def main() -> None:
     screen_width = 80

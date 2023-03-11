@@ -10,6 +10,7 @@ from tcod.map import compute_fov
 from message_log import MessageLog
 import exceptions
 import render_functions
+from part_types import PartType
 
 if TYPE_CHECKING:
     from entity import Actor
@@ -35,10 +36,26 @@ class Engine:
 
     def update_fov(self) -> None:
         """Recompute the visible area based on the players point of view."""
+        #loaded tile / visible tile
+        vision_radius = 0
+        dark_bool = False
+        for part in self.player.body.parts:
+            if part.part_type == PartType.EYE:
+                vision_radius += 4
+            if part.dark_vision:
+                dark_bool = True
+        if dark_bool:
+            vision_radius += 2
+        
         self.game_map.visible[:] = compute_fov(
             self.game_map.tiles["transparent"],
             (self.player.x, self.player.y),
-            radius=8,
+            radius=max(1,vision_radius),
+        )
+        self.game_map.loaded[:] = compute_fov(
+            self.game_map.tiles["transparent"],
+            (self.player.x, self.player.y),
+            radius=max(8, vision_radius),
         )
         # If a tile is "visible" it should be added to "explored".
         self.game_map.explored |= self.game_map.visible

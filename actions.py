@@ -212,8 +212,8 @@ class SacrificePart(Action):
             self.offerings.append(self.entity.inventory.items[ind])
     
     def perform(self) -> None:
-        radius = 4 + self.part.current_health
-        max_quality = 25 # const
+        radius = 3 + self.part.current_health
+        max_quality = 50 # const
         sum_quality = 0
         for offering in self.offerings:
             if sum_quality < max_quality:
@@ -242,9 +242,7 @@ class SacrificePart(Action):
             self.entity.body.parts.append(copy.deepcopy(entity_factories.phantom_torso).part)
         self.entity.body.parts.remove(self.part)
 
-        
-        # replace part
-        damage = 10 + int(sum_quality * 1.5)
+        damage = 10 + sum_quality
         self.engine.message_log.add_message(f"The flesh explodes in a burst of energy", color.spiritual)
         damaged_actors: List[Actor] = []
         for actor in self.engine.game_map.actors:

@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from components.base_component import BaseComponent
 from part_types import PartType
 from forms import Form
-from ability import Ability
 
 if TYPE_CHECKING:
     from entity import Item
@@ -18,18 +17,17 @@ class Part(BaseComponent):
         self,
         part_type: PartType,
         form: Form,
-        #ability: Ability,
         health_bonus: int = 0,
         mental_bonus: int = 0,
         spiritual_defense_bonus: int = 0,
         spiritual_power_bonus: int = 0,
         power_bonus: int = 0,
         defense_bonus: int = 0,
+        dark_vision: bool = False,
         
     ):
         self.part_type = part_type
         self.form = form
-        #self.ability = Ability
         self.health_bonus = health_bonus
         self.current_health = health_bonus
         self.mental_bonus = mental_bonus
@@ -37,6 +35,7 @@ class Part(BaseComponent):
         self.spiritual_power_bonus = spiritual_power_bonus
         self.power_bonus = power_bonus
         self.defense_bonus = defense_bonus
+        self.dark_vision = dark_vision
 
 # would be pretty cool if there were two seperate hemispheres...
 class Human_Brain(Part):
@@ -97,7 +96,7 @@ class Librarian_Leg(Part):
 
 class Librarian_Eye(Part):
     def __init__(self) -> None:
-        super().__init__(part_type=PartType.EYE, form=Form.FLESH, mental_bonus = 3, spiritual_defense_bonus=2, spiritual_power_bonus=2)
+        super().__init__(part_type=PartType.EYE, form=Form.FLESH, mental_bonus = 3, spiritual_defense_bonus=2, spiritual_power_bonus=2, dark_vision=True)
 
 
 class Librarian_Ear(Part):
@@ -138,7 +137,7 @@ class Dwarf_Leg(Part):
 
 class Dwarf_Eye(Part):
     def __init__(self) -> None:
-        super().__init__(part_type=PartType.EYE, form=Form.FLESH)
+        super().__init__(part_type=PartType.EYE, form=Form.FLESH, dark_vision=True)
 
 
 class Dwarf_Ear(Part):
@@ -192,7 +191,7 @@ class Phantom_Leg(Part):
 
 class Phantom_Eye(Part):
     def __init__(self) -> None:
-        super().__init__(part_type=PartType.EYE, form=Form.SPIRIT, spiritual_defense_bonus=3, spiritual_power_bonus=3)
+        super().__init__(part_type=PartType.EYE, form=Form.SPIRIT, spiritual_defense_bonus=3, spiritual_power_bonus=3, dark_vision=True)
 
 
 class Phantom_Ear(Part):

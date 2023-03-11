@@ -266,8 +266,17 @@ glass_shard = Item(char="w", color=color.spiritual, name="Glass Shard", stack=St
 
 torn_scrap = Item(char="=", color=color.spiritual, name="Torn Scrap", stack=Stackable(5,1), description=
     """
-    Covered in smudge glyphs, undecipherable.
+    Covered in smudged glyphs, undecipherable.
     """,)
+
+orange = Item(char="o", color=color.orange, name="Orange",stack=Stackable(1,8), description=
+    """
+    ... delicious
+    so sweet
+    and so cold
+    """,
+    consumable=consumable.HealingConsumable(3)
+    )
 
 # H:20 M:10 P:10 D:10 SP:10 SD:10
 player = Actor(
@@ -295,7 +304,7 @@ librarian = Actor(
     ai_cls=Neutral,
     equipment=Equipment(),
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
-    inventory=Inventory(capacity=10),
+    inventory=Inventory(capacity=10, items=[torn_scrap]),
     level=Level(xp_given=35),
     body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
     loot_table=base_loot,
@@ -313,7 +322,7 @@ mad_librarian = Actor(
     ai_cls=HostileEnemy,
     equipment=Equipment(),
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
-    inventory=Inventory(capacity=10),
+    inventory=Inventory(capacity=10, items=[torn_scrap]),
     level=Level(xp_given=35),
     body = Body(parts=[librarian_leg, librarian_leg, librarian_arm, librarian_arm, librarian_eye, librarian_tongue, librarian_torso, librarian_ear, librarian_ear, librarian_heart, librarian_brain]),
     loot_table=base_loot,
@@ -331,7 +340,7 @@ dwarf = Actor(
     ai_cls=Neutral,
     equipment=Equipment(),
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
-    inventory=Inventory(capacity=10),
+    inventory=Inventory(capacity=10, items=[glass_shard]),
     level=Level(xp_given=100),
     body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
@@ -349,7 +358,7 @@ mad_dwarf = Actor(
     ai_cls=HostileEnemy,
     equipment=Equipment(),
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=0, spiritual_defense=0, spiritual_power=0),
-    inventory=Inventory(capacity=10),
+    inventory=Inventory(capacity=10, items=[glass_shard]),
     level=Level(xp_given=100),
     body = Body(parts=[dwarf_leg, dwarf_leg, dwarf_arm, dwarf_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
@@ -367,13 +376,13 @@ max = Actor(
     ai_cls=HostileEnemy,
     equipment=Equipment(),
     fighter=Fighter(hp=0, base_defense=0, base_power=0, mental_strength=-9, spiritual_defense=0, spiritual_power=0),
-    inventory=Inventory(capacity=10),
+    inventory=Inventory(capacity=10, items=[glass_shard,orange]),
     level=Level(xp_given=100),
     body = Body(parts=[max_leg, max_leg, max_arm, max_arm, dwarf_eye, dwarf_eye, dwarf_tongue, dwarf_torso, dwarf_ear, dwarf_ear,dwarf_heart, dwarf_brain]),
     loot_table=base_loot,
     description=
     """
-    This dwarf is covered in orange paraphenalia. 
+    This dwarf has a bandolier of oranges across their chest. 
     His limbs have grown strong from the oranges.
     """,
 )

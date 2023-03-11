@@ -51,7 +51,7 @@ def new_game() -> Engine:
     leather_armor = copy.deepcopy(entity_factories.leather_armor)
     sacrificial_dagger = copy.deepcopy(entity_factories.sacrificial_dagger)
     glass_shard = copy.deepcopy(entity_factories.glass_shard)
-    glass_shard.stack.stack = 5
+    glass_shard.stack.stack = 7
 
     dagger.parent = player.inventory
     leather_armor.parent = player.inventory
