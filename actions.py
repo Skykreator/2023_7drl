@@ -50,7 +50,7 @@ class PickupAction(Action):
                 if item.stack:
                     for inv_item in inventory.items:
                         if inv_item.stack and inv_item.name == item.name:
-                            inv_item.stack += item.stack
+                            inv_item.stack.stack += item.stack.stack
                             return
                 if len(inventory.items) >= inventory.capacity:
                     raise exceptions.Impossible("Your inventory is full.")
